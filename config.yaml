@@ -4,18 +4,82 @@ sonarqube:
 
 # Repositories to scan
 repositories:
-# Test repositories
+# Self-check repositories
   - name: "python-pad-project"
     url: "https://github.com/Cosmo-Tech/python-bad-project.git"
     branches: ["main"]
     project_key: "python-bad-project"
-    
+
+  - name: "sonarqube-scanner"
+    url: "https://github.com/Cosmo-Tech/sonarqube-scanner.git"
+    branches: ["main"]
+    project_key: "sonarqube-scanner"
+
+
+# platform
+  - name: "cosmotech-api-common"
+    url: "https://github.com/Cosmo-Tech/cosmotech-api-common.git"
+    branches: ["main", "release/v3.3"]
+    project_key: "cosmotech-api-common"
+
   - name: "cosmotech-api"
     url: "https://github.com/Cosmo-Tech/cosmotech-api.git"
     branches: ["main", "release/v3.3"]
     project_key: "cosmotech-api"
 
-# web app 
-# API
-# python
-# SDK
+  - name: "azure-sample-webapp"
+    url: "https://github.com/Cosmo-Tech/azure-sample-webapp.git"
+    branches: ["main"]
+    project_key: "azure-sample-webapp"
+
+  - name: "webapp-component-ui"
+    url: "https://github.com/Cosmo-Tech/webapp-component-ui.git"
+    branches: ["main"]
+    project_key: "webapp-component-ui"
+
+  - name: "webapp-component-core"
+    url: "https://github.com/Cosmo-Tech/webapp-component-core.git"
+    branches: ["main"]
+    project_key: "webapp-component-core"
+
+  - name: "webapp-component-azure"
+    url: "https://github.com/Cosmo-Tech/webapp-component-azure.git"
+    branches: ["main"]
+    project_key: "webapp-component-azure"
+
+  - name: "cosmotech-api-python-client"
+    url: "https://github.com/Cosmo-Tech/cosmotech-api-python-client.git"
+    branches: ["main"]
+    project_key: "cosmotech-api-python-client"
+
+  - name: "Babylon"
+    url: "https://github.com/Cosmo-Tech/Babylon.git"
+    branches: ["main"]
+    project_key: "Babylon"
+
+  - name: "run-orchestrator"
+    url: "https://github.com/Cosmo-Tech/run-orchestrator.git"
+    branches: ["main"]
+    project_key: "run-orchestrator"
+
+  - name: "CosmoTech-Acceleration-Library"
+    url: "https://github.com/Cosmo-Tech/CosmoTech-Acceleration-Library.git"
+    branches: ["main"]
+    project_key: "CosmoTech-Acceleration-Library"
+
+  - name: "cosmotech-api-typescript-client"
+    url: "https://github.com/Cosmo-Tech/cosmotech-api-typescript-client.git"
+    branches: ["main"]
+    project_key: "cosmotech-api-typescript-client"
+
+  - name: "terraform-kubernetes-cosmotech-common"
+    url: "https://github.com/Cosmo-Tech/terraform-kubernetes-cosmotech-common.git"
+    branches: ["main"]
+    project_key: "terraform-kubernetes-cosmotech-common"
+
+  - name: "terraform-kubernetes-cosmotech-tenant"
+    url: "https://github.com/Cosmo-Tech/terraform-kubernetes-cosmotech-tenant.git"
+    branches: ["main"]
+    project_key: "terraform-kubernetes-cosmotech-tenant"
+
+
