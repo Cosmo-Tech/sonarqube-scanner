@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sonarqube-scanner"
+version = "0.1.0"
+description = "Scan Cosmo-Tech platform repositories with SonarQube"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pyyaml>=6.0",
+    "gitpython>=3.1.0",
+]
+
+[project.scripts]
+sonar-scan = "sonarqube_scanner:main"

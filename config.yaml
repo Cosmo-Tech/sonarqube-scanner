@@ -1,0 +1,15 @@
+# SonarQube server configuration
+sonarqube:
+  url: "https://sonarqube.cosmotech.com/"
+
+# Repositories to scan
+repositories:
+  - name: "python-pad-project"
+    url: "https://github.com/Cosmo-Tech/python-bad-project"
+    branches: ["main"]
+    project_key: "python-bad-project"
+    
+  - name: "repo2"
+    url: "https://github.com/Cosmo-Tech/cosmotech-api.git"
+    branches: ["main", "release/v3.3"]
+    project_key: "cosmotech-api"
