@@ -4,12 +4,18 @@ sonarqube:
 
 # Repositories to scan
 repositories:
+# Test repositories
   - name: "python-pad-project"
-    url: "https://github.com/Cosmo-Tech/python-bad-project"
+    url: "https://github.com/Cosmo-Tech/python-bad-project.git"
     branches: ["main"]
     project_key: "python-bad-project"
     
-  - name: "repo2"
+  - name: "cosmotech-api"
     url: "https://github.com/Cosmo-Tech/cosmotech-api.git"
     branches: ["main", "release/v3.3"]
     project_key: "cosmotech-api"
+
+# web app 
+# API
+# python
+# SDK

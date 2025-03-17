@@ -6,14 +6,15 @@ SonarQube Scanner - Scan Cosmo-Tech repositories with SonarQube.
 import sys
 import subprocess
 import logging
-import argparse
+import click
 import yaml
 import git
 import os
+from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler()]
 )
@@ -31,7 +32,7 @@ def load_config(config_path):
 def run_sonar_scanner(repo_dir, sonar_url, sonar_token, project_key, project_name=None):
     """Run SonarQube scanner on repository"""
     logger.info(f"Running SonarQube scanner on {repo_dir}")
-    
+
     # Build command with required parameters
     cmd = [
         'sonar-scanner',
@@ -65,35 +66,28 @@ def run_sonar_scanner(repo_dir, sonar_url, sonar_token, project_key, project_nam
 
 def clone_or_update_repository(repo_url, branch, base_dir):
     """Clone or update a repository for a specific branch"""
-    repo_name = repo_url.split('/')[-1].replace('.git', '')
-    repo_path = f"{base_dir}/{repo_name}"
-    
-    try:
-        if not os.path.exists(repo_path):
-            logger.info(f"Cloning {repo_url} branch {branch} to {repo_path}")
-            repo = git.Repo.clone_from(
-                repo_url,
-                repo_path,
-                branch=branch
-            )
-        else:
-            logger.info(f"Updating existing repository at {repo_path}")
-            repo = git.Repo(repo_path)
-            repo.git.checkout(branch)
-            repo.remotes.origin.pull()
-            
-        logger.info(f"Successfully updated {repo_url} branch {branch}")
-        return repo_path
-    except Exception as e:
-        logger.error(f"Failed to update repository {repo_url}: {str(e)}")
-        raise
+    repo_name = repo_url.split('/')[-1].replace('.git','')
+    target = Path(base_dir) / repo_name
+    if target.exists():
+        logger.info(f"Repository already exists pulling branch {branch} of {repo_name}")
+        repo = git.Repo(target)
+        repo.git.checkout(branch)
+        repo.remotes.origin.fetch()
+        repo.git.checkout(branch)
+        repo.git.reset('--hard', f'origin/{branch}')
+    else:
+        logger.info(f"cloning {repo_name}")
+        repo = git.Repo.clone_from(
+            url= repo_url,
+            to_path = target
+        )
+    return target
 
 def process_branch(repo_url, branch, base_dir, sonar_config, project_key, project_name):
     """Process a single branch of a repository"""
     try:
         # Update repository
         repo_dir = clone_or_update_repository(repo_url, branch, base_dir)
-        
         # Run scanner
         success = run_sonar_scanner(
             repo_dir,
@@ -102,7 +96,6 @@ def process_branch(repo_url, branch, base_dir, sonar_config, project_key, projec
             project_key,
             project_name
         )
-        
         if success:
             logger.info(f"Successfully scanned {project_name} branch {branch}")
         else:
@@ -128,45 +121,38 @@ def scan_repository(repo_config, sonar_config, base_dir):
         logger.info(f"Processing branch: {branch}")
         process_branch(repo_url, branch, base_dir, sonar_config, project_key, project_name)
 
-def parse_arguments():
-    """Parse command line arguments"""
-    parser = argparse.ArgumentParser(description='Scan GitHub repositories with SonarQube')
-    parser.add_argument('--config', '-c', 
-                        default='config.yaml',
-                        help='Path to configuration file (default: config.yaml)')
-    parser.add_argument('--verbose', '-v', 
-                        action='store_true',
-                        help='Enable verbose output')
-    return parser.parse_args()
-
-def main():
-    """Main function to orchestrate the scanning process"""
-    # Parse command line arguments
-    args = parse_arguments()
-    
+@click.command()
+@click.option('--config', '-c', 
+              default='config.yaml',
+              help='Path to configuration file (default: config.yaml)')
+@click.option('--verbose', '-v', 
+              is_flag=True,
+              help='Enable verbose output')
+def main(config, verbose):
+    """Scan GitHub repositories with SonarQube."""
     # Set log level based on verbosity
-    if args.verbose:
+    if verbose:
         logger.setLevel(logging.DEBUG)
     
     # Load configuration
-    logger.info(f"Loading configuration from {args.config}")
-    config = load_config(args.config)
-    config['token'] = os.getenv('SONARQUBE_TOKEN')
+    logger.info(f"Loading configuration from {config}")
+    config_data = load_config(config)
     # Validate configuration
-    if 'sonarqube' not in config:
+    if 'sonarqube' not in config_data:
         logger.error("Missing 'sonarqube' section in configuration")
         sys.exit(1)
-    if 'repositories' not in config:
+    if 'repositories' not in config_data:
         logger.error("Missing 'repositories' section in configuration")
         sys.exit(1)
     
     # Extract SonarQube configuration
-    sonar_config = config['sonarqube']
+    sonar_config = config_data['sonarqube']
+    sonar_config['token'] = os.getenv('SONARQUBE_TOKEN')
     if 'url' not in sonar_config:
         logger.error("SonarQube configuration must include 'url'")
         sys.exit(1)
 
-    for repo_config in config['repositories']:
+    for repo_config in config_data['repositories']:
         # Validate repository configuration
         required_fields = ['name', 'url', 'branches', 'project_key']
         missing_fields = [field for field in required_fields if field not in repo_config]

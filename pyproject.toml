@@ -11,6 +11,7 @@ requires-python = ">=3.8"
 dependencies = [
     "pyyaml>=6.0",
     "gitpython>=3.1.0",
+    "click>=8.1.8",
 ]
 
 [project.scripts]
