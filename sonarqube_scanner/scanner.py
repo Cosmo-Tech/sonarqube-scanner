@@ -15,8 +15,7 @@ def run_sonar_scanner(
     sonar_url,
     sonar_token,
     project_key,
-    project_name,
-    additional_params
+    project_name
 ):
     """
     Run SonarQube scanner on repository.
@@ -27,8 +26,7 @@ def run_sonar_scanner(
         sonar_token: SonarQube authentication token
         project_key: SonarQube project key
         project_name: Optional project display name
-        additional_params: Optional additional SonarQube parameters
-        
+
     Returns:
         True if scan was successful, False otherwise
     """
@@ -46,11 +44,6 @@ def run_sonar_scanner(
     # Add optional project name if provided
     if project_name:
         cmd.append(f'-Dsonar.projectName={project_name}')
-
-    # Add any additional parameters
-    if additional_params:
-        for key, value in additional_params.items():
-            cmd.append(f'-D{key}={value}')
 
     try:
         # Run the scanner
@@ -98,19 +91,13 @@ def process_branch(
         # Update repository
         repo_dir = clone_or_update_repository(repo_url, branch, base_dir)
 
-        # Add branch information to SonarQube parameters
-        additional_params = {
-            "sonar.branch.name": branch
-        }
-
         # Run scanner
         success = run_sonar_scanner(
             repo_dir,
             sonar_config['url'],
             sonar_config['token'],
             project_key,
-            project_name,
-            additional_params
+            project_name
         )
 
         if success:
