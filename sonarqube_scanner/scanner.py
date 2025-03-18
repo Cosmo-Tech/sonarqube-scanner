@@ -14,8 +14,8 @@ def run_sonar_scanner(
     repo_dir,
     sonar_url,
     sonar_token,
-    project_key,
-    project_name
+    repo_name,
+    branch_name
 ):
     """
     Run SonarQube scanner on repository.
@@ -24,13 +24,17 @@ def run_sonar_scanner(
         repo_dir: Repository directory path
         sonar_url: SonarQube server URL
         sonar_token: SonarQube authentication token
-        project_key: SonarQube project key
-        project_name: Optional project display name
+        repo_name: Repository name
+        branch_name: Branch name being scanned
 
     Returns:
         True if scan was successful, False otherwise
     """
     logger.info(f"Running SonarQube scanner on {repo_dir}")
+
+    # Generate project key from repo name and branch
+    project_key = f"{repo_name}-{branch_name}".replace("/", "-")
+    project_name = f"{repo_name} ({branch_name})"
 
     # Build command with required parameters
     cmd = [
@@ -38,12 +42,9 @@ def run_sonar_scanner(
         f'-Dsonar.host.url={sonar_url}',
         f'-Dsonar.token={sonar_token}',
         f'-Dsonar.projectKey={project_key}',
+        f'-Dsonar.projectName={project_name}',
         f'-Dsonar.projectBaseDir={repo_dir}'
     ]
-
-    # Add optional project name if provided
-    if project_name:
-        cmd.append(f'-Dsonar.projectName={project_name}')
 
     try:
         # Run the scanner
@@ -67,22 +68,20 @@ def run_sonar_scanner(
 
 def process_branch(
     repo_url,
+    repo_name,
     branch,
     base_dir,
-    sonar_config,
-    project_key,
-    project_name
+    sonar_config
 ):
     """
     Process a single branch of a repository.
 
     Args:
         repo_url: Git repository URL
+        repo_name: Repository name
         branch: Branch name to scan
         base_dir: Base directory for cloning repositories
         sonar_config: SonarQube configuration
-        project_key: SonarQube project key
-        project_name: Project display name
 
     Returns:
         True if scan was successful, False otherwise
@@ -96,22 +95,22 @@ def process_branch(
             repo_dir,
             sonar_config['url'],
             sonar_config['token'],
-            project_key,
-            project_name
+            repo_name,
+            branch
         )
 
         if success:
-            logger.info(f"Successfully scanned {project_name} branch {branch}")
+            logger.info(f"Successfully scanned {repo_name} branch {branch}")
             return True
         else:
-            logger.error(f"Failed to scan {project_name} branch {branch}")
+            logger.error(f"Failed to scan {repo_name} branch {branch}")
             return False
 
     except GitError as e:
-        logger.error(f"Git error processing {project_name} branch {branch}: {str(e)}")
+        logger.error(f"Git error processing {repo_name} branch {branch}: {str(e)}")
         return False
     except Exception as e:
-        logger.error(f"Error processing {project_name} branch {branch}: {str(e)}")
+        logger.error(f"Error processing {repo_name} branch {branch}: {str(e)}")
         return False
 
 def scan_repository(
@@ -128,15 +127,11 @@ def scan_repository(
         base_dir: Base directory for cloning repositories
 
     Returns:
-        Tuple of (successful scans, total scans)
+        None
     """
     repo_name = repo_config['name']
     repo_url = repo_config['url']
-    project_key = repo_config['project_key']
     branches = repo_config['branches']
-
-    # Get optional project name if available
-    project_name = repo_config.get('project_name', repo_name)
 
     logger.info(f"Processing repository: {repo_name}")
 
@@ -144,14 +139,13 @@ def scan_repository(
     for branch in branches:
         logger.info(f"Processing branch: {branch}")
         success = process_branch(
-            repo_url, 
-            branch, 
-            base_dir, 
-            sonar_config, 
-            project_key, 
-            project_name
+            repo_url,
+            repo_name,
+            branch,
+            base_dir,
+            sonar_config
         )
-        logger.info(f"Scanned {repo_name}:{branch}")
+        logger.info(f"Scan {'succeeded' if success else 'failed'} for {repo_name}:{branch}")
 
 def scan_repositories(
     config,
