@@ -19,22 +19,22 @@ repositories:
 # platform
   - name: "cosmotech-api-common"
     url: "https://github.com/Cosmo-Tech/cosmotech-api-common.git"
-    branches: ["main", "release/v3.3"]
+    branches: ["main", "release/v3.3", "release/v4-onprem"]
     project_key: "cosmotech-api-common"
 
   - name: "cosmotech-api"
     url: "https://github.com/Cosmo-Tech/cosmotech-api.git"
-    branches: ["main", "release/v3.3"]
+    branches: ["main", "release/v3.3", "release/v4-onprem"]
     project_key: "cosmotech-api"
 
   - name: "azure-sample-webapp"
     url: "https://github.com/Cosmo-Tech/azure-sample-webapp.git"
-    branches: ["main"]
+    branches: ["main", "release/7.0"]
     project_key: "azure-sample-webapp"
 
   - name: "webapp-component-ui"
     url: "https://github.com/Cosmo-Tech/webapp-component-ui.git"
-    branches: ["main"]
+    branches: ["main", "release/10.0"]
     project_key: "webapp-component-ui"
 
   - name: "webapp-component-core"
@@ -74,21 +74,21 @@ repositories:
 
   - name: "terraform-kubernetes-cosmotech-common"
     url: "https://github.com/Cosmo-Tech/terraform-kubernetes-cosmotech-common.git"
-    branches: ["main"]
+    branches: ["main", "azure"]
     project_key: "terraform-kubernetes-cosmotech-common"
 
   - name: "terraform-kubernetes-cosmotech-tenant"
     url: "https://github.com/Cosmo-Tech/terraform-kubernetes-cosmotech-tenant.git"
-    branches: ["main"]
+    branches: ["main", "azure"]
     project_key: "terraform-kubernetes-cosmotech-tenant"
 
   - name: "terraform-azure-cosmotech-tenant"
     url: "https://github.com/Cosmo-Tech/terraform-azure-cosmotech-tenant.git"
-    branches: ["master"]
+    branches: ["master", "azure"]
     project_key: "terraform-azure-cosmotech-tenant"
 
   - name: "terraform-azure-cosmotech-common"
     url: "https://github.com/Cosmo-Tech/terraform-azure-cosmotech-common.git"
-    branches: ["master"]
+    branches: ["master", "azure"]
     project_key: "terraform-azure-cosmotech-common"
 
