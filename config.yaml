@@ -1,6 +1,6 @@
 # SonarQube server configuration
 sonarqube:
-  url: "https://sonarqube.cosmotech.com/"
+  url: "https://localhost:9000"
 
 # Repositories to scan
 repositories:
