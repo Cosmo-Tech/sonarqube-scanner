@@ -82,4 +82,13 @@ repositories:
     branches: ["main"]
     project_key: "terraform-kubernetes-cosmotech-tenant"
 
+  - name: "terraform-azure-cosmotech-tenant"
+    url: "https://github.com/Cosmo-Tech/terraform-azure-cosmotech-tenant.git"
+    branches: ["master"]
+    project_key: "terraform-azure-cosmotech-tenant"
+
+  - name: "terraform-azure-cosmotech-common"
+    url: "https://github.com/Cosmo-Tech/terraform-azure-cosmotech-common.git"
+    branches: ["master"]
+    project_key: "terraform-azure-cosmotech-common"
 
