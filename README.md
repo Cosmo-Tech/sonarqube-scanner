@@ -33,5 +33,5 @@ Edit the `config.yaml` file to specify:
 Run the scanner with default configuration:
 
 ```bash
-sonar-scan
+sonarqube-scanner
 ```

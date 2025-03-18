@@ -26,7 +26,7 @@ dev = [
 ]
 
 [project.scripts]
-sonar-scan = "sonarqube_scanner.cli:main"
+sonarqube-scanner = "sonarqube_scanner.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/sonarqube_scanner"]
+packages = ["sonarqube_scanner"]
