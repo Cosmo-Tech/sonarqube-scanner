@@ -49,7 +49,7 @@ repositories:
 
   - name: "cosmotech-api-python-client"
     url: "https://github.com/Cosmo-Tech/cosmotech-api-python-client.git"
-    branches: ["main"]
+    branches: ["master"]
     project_key: "cosmotech-api-python-client"
 
   - name: "Babylon"
@@ -69,7 +69,7 @@ repositories:
 
   - name: "cosmotech-api-typescript-client"
     url: "https://github.com/Cosmo-Tech/cosmotech-api-typescript-client.git"
-    branches: ["main"]
+    branches: ["master"]
     project_key: "cosmotech-api-typescript-client"
 
   - name: "terraform-kubernetes-cosmotech-common"
