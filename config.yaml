@@ -5,7 +5,7 @@ sonarqube:
 # Repositories to scan
 repositories:
 # Self-check repositories
-  - name: "python-pad-project"
+  - name: "python-bad-project"
     url: "https://github.com/Cosmo-Tech/python-bad-project.git"
     branches: ["main"]
     project_key: "python-bad-project"
