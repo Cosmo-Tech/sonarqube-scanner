@@ -1,6 +1,6 @@
 # SonarQube server configuration
 sonarqube:
-  url: "https://localhost:9000"
+  url: "http://localhost:9000"
 
 # Repositories to scan
 repositories:
