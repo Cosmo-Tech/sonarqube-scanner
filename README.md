@@ -11,27 +11,17 @@ A Python tool to scan GitHub repositories with SonarQube.
 - Access to GitHub repositories
 - SonarQube server (Community Edition)
 
-## Installation
-
-### Using uv
+## Installation and Setup
 
 ```bash
-uv pip install -e .
+uv venv
+uv pip install .
 ```
 
-## Configuration
+Adapt the `config.yaml` file if necessary.
 
-Edit the `config.yaml` file to specify:
+Configure crontab by running `crontab -e` and adapting the code:
 
-1. SonarQube server URL and token
-2. List of repositories to scan with their branches
-
-## Usage
-
-### Command Line
-
-Run the scanner with default configuration:
-
-```bash
-sonarqube-scanner
+```
+@midnight export SONARQUBE_TOKEN=<replace with Global Scan Token>; PATH=$PATH:/usr/local/bin; $HOME/sonarqube-scanner/.venv/bin/sonarqube-scanner -c $HOME/sonarqube-scanner/config.yaml > $HOME/sonarqube_scanner_last_run.log 2&>1
 ```
