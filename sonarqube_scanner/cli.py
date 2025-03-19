@@ -73,6 +73,7 @@ def main(config, verbose, output_dir, token, repo):
 
         # Run scans
         scan_repositories(config_data, base_dir)
+        return 0
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         if verbose:
