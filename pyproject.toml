@@ -30,3 +30,8 @@ sonarqube-scanner = "sonarqube_scanner.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["sonarqube_scanner"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
