@@ -3,25 +3,24 @@ Git operations for the SonarQube Scanner.
 """
 
 import logging
-from pathlib import Path
 from git import Repo
 from git.exc import GitCommandError
 
 logger = logging.getLogger("sonarqube_scanner")
 
+
 class GitError(Exception):
     """Exception raised for Git operation errors."""
+
     pass
+
 
 def get_repo_name(repo_url):
     """Extract repository name from Git URL."""
-    return repo_url.split('/')[-1].replace('.git', '')
+    return repo_url.split("/")[-1].replace(".git", "")
 
-def clone_or_update_repository(
-    repo_url,
-    branch,
-    base_dir
-):
+
+def clone_or_update_repository(repo_url, branch, base_dir):
     """
     Clone or update a repository for a specific branch.
 
@@ -45,7 +44,7 @@ def clone_or_update_repository(
             repo = Repo(target)
             repo.remotes.origin.fetch()
             repo.git.checkout(branch)
-            repo.git.reset('--hard', f'origin/{branch}')
+            repo.git.reset("--hard", f"origin/{branch}")
             logger.info(f"Updated {repo_name} to {branch}")
         else:
             logger.info(f"Cloning repository: {repo_name}")

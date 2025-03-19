@@ -4,22 +4,16 @@ SonarQube scanning functionality.
 
 import logging
 import subprocess
-from pathlib import Path
 
 from .git import clone_or_update_repository, GitError
 
 logger = logging.getLogger("sonarqube_scanner")
 
-def run_sonar_scanner(
-    repo_dir,
-    sonar_url,
-    sonar_token,
-    repo_name,
-    branch_name
-):
+
+def run_sonar_scanner(repo_dir, sonar_url, sonar_token, repo_name, branch_name):
     """
     Run SonarQube scanner on repository.
-    
+
     Args:
         repo_dir: Repository directory path
         sonar_url: SonarQube server URL
@@ -38,12 +32,12 @@ def run_sonar_scanner(
 
     # Build command with required parameters
     cmd = [
-        'sonar-scanner',
-        f'-Dsonar.host.url={sonar_url}',
-        f'-Dsonar.token={sonar_token}',
-        f'-Dsonar.projectKey={project_key}',
-        f'-Dsonar.projectName={project_name}',
-        f'-Dsonar.projectBaseDir={repo_dir}'
+        "sonar-scanner",
+        f"-Dsonar.host.url={sonar_url}",
+        f"-Dsonar.token={sonar_token}",
+        f"-Dsonar.projectKey={project_key}",
+        f"-Dsonar.projectName={project_name}",
+        f"-Dsonar.projectBaseDir={repo_dir}",
     ]
 
     try:
@@ -66,13 +60,8 @@ def run_sonar_scanner(
         logger.error(f"Error running scanner: {str(e)}")
         return False
 
-def process_branch(
-    repo_url,
-    repo_name,
-    branch,
-    base_dir,
-    sonar_config
-):
+
+def process_branch(repo_url, repo_name, branch, base_dir, sonar_config):
     """
     Process a single branch of a repository.
 
@@ -92,11 +81,7 @@ def process_branch(
 
         # Run scanner
         success = run_sonar_scanner(
-            repo_dir,
-            sonar_config['url'],
-            sonar_config['token'],
-            repo_name,
-            branch
+            repo_dir, sonar_config["url"], sonar_config["token"], repo_name, branch
         )
 
         if success:
@@ -113,11 +98,8 @@ def process_branch(
         logger.error(f"Error processing {repo_name} branch {branch}: {str(e)}")
         return False
 
-def scan_repository(
-    repo_config,
-    sonar_config,
-    base_dir
-):
+
+def scan_repository(repo_config, sonar_config, base_dir):
     """
     Scan a single repository with all its branches.
 
@@ -129,28 +111,22 @@ def scan_repository(
     Returns:
         None
     """
-    repo_name = repo_config['name']
-    repo_url = repo_config['url']
-    branches = repo_config['branches']
+    repo_name = repo_config["name"]
+    repo_url = repo_config["url"]
+    branches = repo_config["branches"]
 
     logger.info(f"Processing repository: {repo_name}")
 
     # Process each branch
     for branch in branches:
         logger.info(f"Processing branch: {branch}")
-        success = process_branch(
-            repo_url,
-            repo_name,
-            branch,
-            base_dir,
-            sonar_config
+        success = process_branch(repo_url, repo_name, branch, base_dir, sonar_config)
+        logger.info(
+            f"Scan {'succeeded' if success else 'failed'} for {repo_name}:{branch}"
         )
-        logger.info(f"Scan {'succeeded' if success else 'failed'} for {repo_name}:{branch}")
 
-def scan_repositories(
-    config,
-    base_dir
-):
+
+def scan_repositories(config, base_dir):
     """
     Scan all repositories specified in the configuration.
 
@@ -161,12 +137,8 @@ def scan_repositories(
     Returns:
         Tuple of (successful repositories, total repositories)
     """
-    sonar_config = config['sonarqube']
-    repositories = config['repositories']
+    sonar_config = config["sonarqube"]
+    repositories = config["repositories"]
 
     for repo_config in repositories:
-        scan_repository(
-            repo_config, 
-            sonar_config, 
-            base_dir
-        )
+        scan_repository(repo_config, sonar_config, base_dir)
