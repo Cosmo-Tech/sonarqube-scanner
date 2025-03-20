@@ -9,6 +9,7 @@ from pathlib import Path
 
 from .config import load_config
 from .scanner import scan_repositories
+from .badges import generate_badges_html
 
 # Configure logging
 logger = logging.getLogger("sonarqube_scanner")
@@ -24,7 +25,13 @@ def setup_logging(verbose: bool):
     )
 
 
-@click.command(help="Scan Git repositories with SonarQube.")
+@click.group()
+def cli():
+    """SonarQube Scanner CLI."""
+    pass
+
+
+@cli.command(help="Scan Git repositories with SonarQube.")
 @click.option(
     "-c",
     "--config",
@@ -41,7 +48,7 @@ def setup_logging(verbose: bool):
 )
 @click.option("-t", "--token", help="SonarQube token (overrides config/env)")
 @click.option("-r", "--repo", multiple=True, help="Scan specific repositories only")
-def main(config, verbose, output_dir, token, repo):
+def scan(config, verbose, output_dir, token, repo):
     """Run SonarQube scans on configured repositories."""
     try:
         # Setup logging
@@ -79,6 +86,55 @@ def main(config, verbose, output_dir, token, repo):
         if verbose:
             logger.exception("Details:")
         return 1
+
+
+@cli.command(help="Generate HTML page with quality gate badges.")
+@click.option(
+    "-c",
+    "--config",
+    default="config.yaml",
+    show_default=True,
+    help="Configuration file path",
+)
+@click.option(
+    "-o",
+    "--output",
+    default="badges.html",
+    show_default=True,
+    help="Output HTML file path",
+)
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option("-t", "--token", help="SonarQube token (overrides config/env)")
+def badges(config, output, verbose, token):
+    """Generate HTML page with quality gate badges."""
+    try:
+        # Setup logging
+        setup_logging(verbose)
+        
+        # Load configuration
+        logger.info(f"Loading configuration: {config}")
+        config_data = load_config(config)
+        
+        # Generate badges HTML
+        success = generate_badges_html(config_data, output)
+        
+        if success:
+            logger.info(f"Badges HTML generated: {output}")
+            return 0
+        else:
+            logger.error("Failed to generate badges HTML")
+            return 1
+            
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        if verbose:
+            logger.exception("Details:")
+        return 1
+
+
+def main():
+    """CLI entry point."""
+    return cli()
 
 
 if __name__ == "__main__":
