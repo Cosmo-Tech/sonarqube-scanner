@@ -74,3 +74,14 @@ repositories:
     url: "https://github.com/Cosmo-Tech/terraform-azure-cosmotech-common.git"
     branches: ["master", "azure"]
 
+  - name: "helm-charts"
+    url: "https://github.com/Cosmo-Tech/helm-charts.git"
+    branches: ["main"]
+
+  - name: "cosmotech-modeling-api"
+    url: "https://github.com/Cosmo-Tech/cosmotech-modeling-api.git"
+    branches: ["main"]
+
+  - name: "cosmotech-modeling-api-typescript-client"
+    url: "https://github.com/Cosmo-Tech/cosmotech-modeling-api-typescript-client.git"
+    branches: ["main"]
