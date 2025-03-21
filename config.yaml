@@ -13,6 +13,10 @@ repositories:
     url: "https://github.com/Cosmo-Tech/sonarqube-scanner.git"
     branches: ["main"]
 
+  - name: "sonarqube-reporter"
+    url: "https://github.com/Cosmo-Tech/sonarqube-reporter.git"
+    branches: ["main"]
+
 # platform
   - name: "cosmotech-api-common"
     url: "https://github.com/Cosmo-Tech/cosmotech-api-common.git"
