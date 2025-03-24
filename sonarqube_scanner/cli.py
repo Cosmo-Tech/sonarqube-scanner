@@ -37,7 +37,7 @@ def setup_logging(verbose: bool):
     "-o",
     "--output-dir",
     type=click.Path(),
-    help="Repository clone directory (default: ~/temp)",
+    help="Repository clone directory (default: ~/scan_data)",
 )
 @click.option("-t", "--token", help="SonarQube token (overrides config/env)")
 @click.option("-r", "--repo", multiple=True, help="Scan specific repositories only")
@@ -48,7 +48,7 @@ def main(config, verbose, output_dir, token, repo):
         setup_logging(verbose)
 
         # Setup output directory
-        base_dir = Path(output_dir) if output_dir else Path.home() / "temp"
+        base_dir = Path(output_dir) if output_dir else Path.home() / "scan_data/"
         base_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"Using output directory: {base_dir}")
 
