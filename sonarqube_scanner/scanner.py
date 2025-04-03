@@ -38,6 +38,8 @@ def run_sonar_scanner(repo_dir, sonar_url, sonar_token, repo_name, branch_name):
         f"-Dsonar.projectKey={project_key}",
         f"-Dsonar.projectName={project_name}",
         f"-Dsonar.projectBaseDir={repo_dir}",
+        "-Dsonar.coverage.exclusions=**",
+        "-X"
     ]
 
     try:
