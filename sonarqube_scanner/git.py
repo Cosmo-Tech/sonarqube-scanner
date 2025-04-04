@@ -3,8 +3,7 @@ Git operations for the SonarQube Scanner.
 """
 
 import logging
-import os
-from git import Repo, Git
+from git import Repo
 from git.exc import GitCommandError
 
 logger = logging.getLogger("sonarqube_scanner")
@@ -26,6 +25,13 @@ def get_repo_name(repo_url):
     return repo_url.split("/")[-1].replace(".git", "")
 
 
+def update_repository(repo, branch):
+    """fetch from remote with https or ssh and switch to branch"""
+    repo.remotes.origin.fetch()
+    repo.git.checkout(branch)
+    repo.git.reset("--hard", f"origin/{branch}")
+
+
 def clone_or_update_repository(repo_url, branch, base_dir):
     """
     Clone or update a repository for a specific branch.
@@ -43,31 +49,28 @@ def clone_or_update_repository(repo_url, branch, base_dir):
     """
     repo_name = get_repo_name(repo_url)
     target = base_dir / repo_name
-
+    ssh_cmd = "ssh -i ~/.ssh/scanner"
     try:
-        # Setup environment based on URL type
-        env = os.environ.copy()
-        if is_ssh_url(repo_url):
-            env['GIT_SSH_COMMAND'] = 'ssh -i ~/.ssh/scanner'
-
         if target.exists():
             logger.info(f"Updating repository: {repo_name}")
             repo = Repo(target)
-            git_context = repo.git.custom_environment(env=env) if is_ssh_url(repo_url) else repo.git
-            with git_context:
-                repo.remotes.origin.fetch()
-                repo.git.checkout(branch)
-                repo.git.reset("--hard", f"origin/{branch}")
+            if is_ssh_url(repo_url):
+                git_context = repo.git.custom_environment(GIT_SSH_COMMAND=ssh_cmd)
+                with git_context:
+                    update_repository(repo, branch)
+            else:
+                update_repository(repo, branch)
             logger.info(f"Updated {repo_name} to {branch}")
         else:
             logger.info(f"Cloning repository: {repo_name}")
-            git_context = Git.custom_environment(env=env) if is_ssh_url(repo_url) else Git()
-            with git_context:
-                repo = Repo.clone_from(repo_url, target)
-                if branch not in ("main", "master"):
+            repo = Repo.clone_from(repo_url, target)
+            if is_ssh_url(repo_url):
+                git_context = repo.git.custom_environment(GIT_SSH_COMMAND=ssh_cmd)
+                with git_context:
                     repo.git.checkout(branch)
+            else:
+                repo.git.checkout(branch)
             logger.info(f"Cloned {repo_name} branch {branch}")
-
         return target
 
     except GitCommandError as e:
