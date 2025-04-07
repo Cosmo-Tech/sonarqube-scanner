@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sonarqube-scanner"
-version = "0.4.1"
+version = "0.5.0"
 description = "Scan Cosmo-Tech platform repositories with SonarQube"
 readme = "README.md"
 requires-python = ">=3.8"

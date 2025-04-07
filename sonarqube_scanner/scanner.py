@@ -78,8 +78,8 @@ def process_branch(repo_url, repo_name, branch, base_dir, sonar_config):
         True if scan was successful, False otherwise
     """
     try:
-        # Update repository
-        repo_dir = clone_or_update_repository(repo_url, branch, base_dir)
+        # Update repository with token authentication
+        repo_dir = clone_or_update_repository(repo_url, repo_name, branch, base_dir)
 
         # Run scanner
         success = run_sonar_scanner(
