@@ -83,9 +83,9 @@ repositories:
     branches: ["main"]
 
   - name: "cosmotech-modeling-api"
-    url: "git@github.com:Cosmo-Tech/cosmotech-modeling-api.git"
+    url: "https://github.com/Cosmo-Tech/cosmotech-modeling-api.git"
     branches: ["main"]
 
   - name: "cosmotech-modeling-api-typescript-client"
-    url: "git@github.com:Cosmo-Tech/cosmotech-modeling-api-typescript-client.git"
+    url: "https://github.com/Cosmo-Tech/cosmotech-modeling-api-typescript-client.git"
     branches: ["main"]
