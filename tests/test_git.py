@@ -35,7 +35,7 @@ def test_get_token_for_repo():
     """Test token retrieval from environment variables."""
     with patch.dict(os.environ, {"GIT_TOKEN_TEST_REPO": "test-token"}):
         assert get_token_for_repo("test-repo") == "test-token"
-    
+
     with patch.dict(os.environ, {}):
         assert get_token_for_repo("test-repo") is None
 
@@ -45,7 +45,7 @@ def test_mask_token_in_url():
     # URL with token
     url = "https://token@github.com/org/repo.git"
     assert mask_token_in_url(url) == "https://***@github.com/org/repo.git"
-    
+
     # URL without token
     url = "https://github.com/org/repo.git"
     assert mask_token_in_url(url) == url
@@ -59,18 +59,20 @@ def test_clone_or_update_repository_with_token(mock_get_token, mock_repo_class):
     mock_get_token.return_value = "test-token"
     mock_repo = MagicMock()
     mock_repo_class.clone_from.return_value = mock_repo
-    
+
     # Test cloning a new repository
     base_dir = Path("/tmp")
     repo_url = "https://github.com/org/repo.git"
     repo_name = "repo"
     branch = "main"
-    
+
     result = clone_or_update_repository(repo_url, repo_name, branch, base_dir)
-    
+
     # Verify the correct URL with token was used
     expected_auth_url = "https://test-token@github.com/org/repo.git"
-    mock_repo_class.clone_from.assert_called_once_with(expected_auth_url, base_dir / repo_name)
+    mock_repo_class.clone_from.assert_called_once_with(
+        expected_auth_url, base_dir / repo_name
+    )
     mock_repo.git.checkout.assert_called_once_with(branch)
     assert result == base_dir / repo_name
 
@@ -83,15 +85,15 @@ def test_clone_or_update_repository_without_token(mock_get_token, mock_repo_clas
     mock_get_token.return_value = None
     mock_repo = MagicMock()
     mock_repo_class.clone_from.return_value = mock_repo
-    
+
     # Test cloning a new repository
     base_dir = Path("/tmp")
     repo_url = "https://github.com/org/repo.git"
     repo_name = "repo"
     branch = "main"
-    
+
     result = clone_or_update_repository(repo_url, repo_name, branch, base_dir)
-    
+
     # Verify the original URL was used (no token)
     mock_repo_class.clone_from.assert_called_once_with(repo_url, base_dir / repo_name)
     mock_repo.git.checkout.assert_called_once_with(branch)
@@ -106,16 +108,16 @@ def test_update_existing_repository_with_token(mock_get_token, mock_repo_class):
     mock_get_token.return_value = "test-token"
     mock_repo = MagicMock()
     mock_repo_class.return_value = mock_repo
-    
+
     # Mock that the repository directory exists
     with patch("pathlib.Path.exists", return_value=True):
         base_dir = Path("/tmp")
         repo_url = "https://github.com/org/repo.git"
         repo_name = "repo"
         branch = "main"
-        
+
         result = clone_or_update_repository(repo_url, repo_name, branch, base_dir)
-        
+
         # Verify the remote URL was updated with the token
         expected_auth_url = "https://test-token@github.com/org/repo.git"
         mock_repo.remotes.origin.set_url.assert_called_once_with(expected_auth_url)
@@ -132,20 +134,20 @@ def test_error_handling_with_token_masking(mock_get_token, mock_repo_class):
     # Setup mocks
     token = "test-token"
     mock_get_token.return_value = token
-    
+
     # Make clone_from raise an error that includes the token
     error_msg = f"Authentication failed with token {token}"
     mock_repo_class.clone_from.side_effect = Exception(error_msg)
-    
+
     # Test cloning a repository that will fail
     base_dir = Path("/tmp")
     repo_url = "https://github.com/org/repo.git"
     repo_name = "repo"
     branch = "main"
-    
+
     with pytest.raises(GitError) as excinfo:
         clone_or_update_repository(repo_url, repo_name, branch, base_dir)
-    
+
     # Verify the token is masked in the error message
     assert token not in str(excinfo.value)
     assert "***" in str(excinfo.value)

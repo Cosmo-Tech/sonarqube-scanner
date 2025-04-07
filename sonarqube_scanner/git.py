@@ -36,7 +36,6 @@ def mask_token_in_url(url):
     """Mask token in URL for logging purposes."""
     if "@" in url and "://" in url:
         protocol = url.split("://")[0]
-        auth_part = url.split("://")[1].split("@")[0]
         rest = url.split("://")[1].split("@")[1]
         return f"{protocol}://***@{rest}"
     return url
@@ -66,15 +65,15 @@ def clone_or_update_repository(repo_url, repo_name, branch, base_dir):
         GitError: If Git operations fail
     """
     target = base_dir / repo_name
-    
+
     # Get token from environment variable
     token = get_token_for_repo(repo_name)
-    
+
     # Convert SSH URLs to HTTPS URLs
     if is_ssh_url(repo_url):
         logger.error("Only https supported")
         raise RuntimeError
-    
+
     # Apply token to URL if available
     auth_url = repo_url
     if token:
@@ -83,36 +82,36 @@ def clone_or_update_repository(repo_url, repo_name, branch, base_dir):
         logger.info(f"Using token authentication for {repo_name}")
     else:
         logger.info(f"No token found for {repo_name}, using public access")
-    
+
     # For logging, mask the token
     masked_url = mask_token_in_url(auth_url)
-    
+
     try:
         if target.exists():
             logger.info(f"Updating repository: {repo_name} from {masked_url}")
             repo = Repo(target)
-            
+
             # Update remote URL with token if available
             repo.remotes.origin.set_url(auth_url)
-            
+
             # Update repository
             repo.remotes.origin.fetch()
             repo.git.checkout(branch)
             repo.git.reset("--hard", f"origin/{branch}")
             logger.info(f"Updated {repo_name} to {branch}")
-                
+
         else:
             logger.info(f"Cloning repository: {repo_name} from {masked_url}")
-            
+
             # Clone with token authentication if available
             repo = Repo.clone_from(auth_url, target)
-            
+
             # Checkout branch
             repo.git.checkout(branch)
             logger.info(f"Cloned {repo_name} branch {branch}")
-            
+
         return target
-        
+
     except GitCommandError as e:
         # Mask token in error messages
         error_msg = str(e)
