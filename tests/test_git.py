@@ -12,7 +12,6 @@ from sonarqube_scanner.git import (
     get_repo_name,
     get_token_for_repo,
     mask_token_in_url,
-    convert_ssh_to_https,
     clone_or_update_repository,
     GitError,
 )
@@ -50,21 +49,6 @@ def test_mask_token_in_url():
     # URL without token
     url = "https://github.com/org/repo.git"
     assert mask_token_in_url(url) == url
-    
-    # SSH URL
-    url = "git@github.com:org/repo.git"
-    assert mask_token_in_url(url) == url
-
-
-def test_convert_ssh_to_https():
-    """Test SSH to HTTPS URL conversion."""
-    # SSH URL
-    ssh_url = "git@github.com:org/repo.git"
-    assert convert_ssh_to_https(ssh_url) == "https://github.com/org/repo.git"
-    
-    # HTTPS URL (no change)
-    https_url = "https://github.com/org/repo.git"
-    assert convert_ssh_to_https(https_url) == https_url
 
 
 @patch("sonarqube_scanner.git.Repo")
@@ -139,30 +123,6 @@ def test_update_existing_repository_with_token(mock_get_token, mock_repo_class):
         mock_repo.git.checkout.assert_called_once_with(branch)
         mock_repo.git.reset.assert_called_once_with("--hard", f"origin/{branch}")
         assert result == base_dir / repo_name
-
-
-@patch("sonarqube_scanner.git.Repo")
-@patch("sonarqube_scanner.git.get_token_for_repo")
-def test_convert_ssh_url_during_clone(mock_get_token, mock_repo_class):
-    """Test that SSH URLs are converted to HTTPS during cloning."""
-    # Setup mocks
-    mock_get_token.return_value = "test-token"
-    mock_repo = MagicMock()
-    mock_repo_class.clone_from.return_value = mock_repo
-    
-    # Test cloning a new repository with SSH URL
-    base_dir = Path("/tmp")
-    repo_url = "git@github.com:org/repo.git"
-    repo_name = "repo"
-    branch = "main"
-    
-    result = clone_or_update_repository(repo_url, repo_name, branch, base_dir)
-    
-    # Verify the SSH URL was converted to HTTPS and token was applied
-    expected_auth_url = "https://test-token@github.com/org/repo.git"
-    mock_repo_class.clone_from.assert_called_once_with(expected_auth_url, base_dir / repo_name)
-    mock_repo.git.checkout.assert_called_once_with(branch)
-    assert result == base_dir / repo_name
 
 
 @patch("sonarqube_scanner.git.Repo")

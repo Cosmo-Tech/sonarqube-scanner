@@ -42,18 +42,6 @@ def mask_token_in_url(url):
     return url
 
 
-def convert_ssh_to_https(repo_url):
-    """Convert SSH URL to HTTPS URL."""
-    if is_ssh_url(repo_url):
-        # Convert git@github.com:org/repo.git to https://github.com/org/repo.git
-        domain = repo_url.split('@')[1].split(':')[0]
-        path = repo_url.split(':')[1]
-        https_url = f"https://{domain}/{path}"
-        logger.info(f"Converted SSH URL to HTTPS: {https_url}")
-        return https_url
-    return repo_url
-
-
 def update_repository(repo, branch):
     """fetch from remote with https or ssh and switch to branch"""
     repo.remotes.origin.fetch()
@@ -83,7 +71,9 @@ def clone_or_update_repository(repo_url, repo_name, branch, base_dir):
     token = get_token_for_repo(repo_name)
     
     # Convert SSH URLs to HTTPS URLs
-    repo_url = convert_ssh_to_https(repo_url)
+    if is_ssh_url(repo_url):
+        logger.error("Only https supported")
+        raise RuntimeError
     
     # Apply token to URL if available
     auth_url = repo_url
