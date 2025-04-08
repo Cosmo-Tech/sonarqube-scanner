@@ -59,7 +59,7 @@ For private Bitbucket Server repositories, you need to use authentication:
   export BITBUCKET_TOKEN_REPOSITORY_NAME=username:token
   ```
 
-  Note: The token format should be `username:token` for Bitbucket Server authentication.
+  Note: The token format should be `username:token` for Bitbucket Server authentication. If the user name contains special characters then you should URL-encode it, e.g. `first.last@company.com:token` should become `first.last%40company.com:token`
 
 
 ## Installation and Setup
