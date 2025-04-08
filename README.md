@@ -28,8 +28,7 @@ repositories:
 
 For private repositories, you need to use a personal access token set as an environment variable:
 
-#### For Github
-
+#### For GitHub
 1. Generate a personal access token in GitHub:
    - Go to GitHub Settings → Developer settings → Personal access tokens
    - Generate a new token with `repo` scope
