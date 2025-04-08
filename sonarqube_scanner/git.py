@@ -21,15 +21,74 @@ def is_ssh_url(repo_url):
     return repo_url.startswith("git@")
 
 
+def is_github_url(repo_url):
+    """Check if the URL is for GitHub."""
+    return "github.com" in repo_url
+
+
 def get_repo_name(repo_url):
     """Extract repository name from Git URL."""
     return repo_url.split("/")[-1].replace(".git", "")
 
 
-def get_token_for_repo(repo_name):
-    """Get token from environment variable for a repository."""
-    env_var = f"GIT_TOKEN_{repo_name.upper().replace('-', '_')}"
-    return os.getenv(env_var)
+def get_token_for_repo(repo_name, is_github=True):
+    """
+    Get token from environment variable for a repository.
+    
+    Args:
+        repo_name: Repository name
+        is_github: Whether this is a GitHub repository (True) or Bitbucket Server (False)
+        
+    Returns:
+        Token string or None if not found
+    """
+    # Normalize repo name for environment variable
+    normalized_name = repo_name.upper().replace("-", "_")
+    
+    # Check for repository-specific token
+    if is_github:
+        env_var = f"GIT_TOKEN_{normalized_name}"
+    else:
+        env_var = f"BITBUCKET_TOKEN_{normalized_name}"
+    
+    token = os.getenv(env_var)
+    
+    # If no repo-specific token, try generic token
+    if not token:
+        if is_github:
+            token = os.getenv("GITHUB_TOKEN")
+        else:
+            token = os.getenv("BITBUCKET_TOKEN")
+    
+    return token
+
+
+def apply_auth_to_url(repo_url, token, is_github=True):
+    """
+    Apply authentication to repository URL.
+    
+    Args:
+        repo_url: Repository URL
+        token: Authentication token
+        is_github: Whether this is a GitHub repository (True) or Bitbucket Server (False)
+        
+    Returns:
+        URL with authentication applied
+    """
+    if not token:
+        return repo_url
+    
+    if is_github:
+        # GitHub format: https://{token}@github.com/...
+        return repo_url.replace("https://", f"https://{token}@")
+    else:
+        # Bitbucket Server format: https://{username}:{token}@server/scm/...
+        if ":" in token:  # Token includes username
+            auth = token
+        else:
+            # Default to 'x-token-auth' as username if only token is provided
+            auth = f"x-token-auth:{token}"
+        return repo_url.replace("https://", f"https://{auth}@")
 
 
 def mask_token_in_url(url):
@@ -66,8 +125,11 @@ def clone_or_update_repository(repo_url, repo_name, branch, base_dir):
     """
     target = base_dir / repo_name
 
+    # Determine if this is a GitHub repository
+    is_github = is_github_url(repo_url)
+    
     # Get token from environment variable
-    token = get_token_for_repo(repo_name)
+    token = get_token_for_repo(repo_name, is_github)
 
     # Convert SSH URLs to HTTPS URLs
     if is_ssh_url(repo_url):
@@ -75,11 +137,11 @@ def clone_or_update_repository(repo_url, repo_name, branch, base_dir):
         raise RuntimeError
 
     # Apply token to URL if available
-    auth_url = repo_url
+    auth_url = apply_auth_to_url(repo_url, token, is_github)
+    
     if token:
-        # Format: https://{token}@github.com/org/repo.git
-        auth_url = repo_url.replace("https://", f"https://{token}@")
-        logger.info(f"Using token authentication for {repo_name}")
+        repo_type = "GitHub" if is_github else "Bitbucket Server"
+        logger.info(f"Using token authentication for {repo_name} ({repo_type})")
     else:
         logger.info(f"No token found for {repo_name}, using public access")
 
