@@ -34,50 +34,50 @@ def get_repo_name(repo_url):
 def get_token_for_repo(repo_name, is_github=True):
     """
     Get token from environment variable for a repository.
-    
+
     Args:
         repo_name: Repository name
         is_github: Whether this is a GitHub repository (True) or Bitbucket Server (False)
-        
+
     Returns:
         Token string or None if not found
     """
     # Normalize repo name for environment variable
     normalized_name = repo_name.upper().replace("-", "_")
-    
+
     # Check for repository-specific token
     if is_github:
         env_var = f"GIT_TOKEN_{normalized_name}"
     else:
         env_var = f"BITBUCKET_TOKEN_{normalized_name}"
-    
+
     token = os.getenv(env_var)
-    
+
     # If no repo-specific token, try generic token
     if not token:
         if is_github:
             token = os.getenv("GITHUB_TOKEN")
         else:
             token = os.getenv("BITBUCKET_TOKEN")
-    
+
     return token
 
 
 def apply_auth_to_url(repo_url, token, is_github=True):
     """
     Apply authentication to repository URL.
-    
+
     Args:
         repo_url: Repository URL
         token: Authentication token
         is_github: Whether this is a GitHub repository (True) or Bitbucket Server (False)
-        
+
     Returns:
         URL with authentication applied
     """
     if not token:
         return repo_url
-    
+
     if is_github:
         # GitHub format: https://{token}@github.com/...
         return repo_url.replace("https://", f"https://{token}@")
@@ -127,7 +127,7 @@ def clone_or_update_repository(repo_url, repo_name, branch, base_dir):
 
     # Determine if this is a GitHub repository
     is_github = is_github_url(repo_url)
-    
+
     # Get token from environment variable
     token = get_token_for_repo(repo_name, is_github)
 
@@ -138,7 +138,7 @@ def clone_or_update_repository(repo_url, repo_name, branch, base_dir):
 
     # Apply token to URL if available
     auth_url = apply_auth_to_url(repo_url, token, is_github)
-    
+
     if token:
         repo_type = "GitHub" if is_github else "Bitbucket Server"
         logger.info(f"Using token authentication for {repo_name} ({repo_type})")

@@ -43,7 +43,10 @@ def test_is_github_url():
 def test_get_repo_name_bitbucket_server():
     """Test repository name extraction for Bitbucket Server URLs."""
     assert get_repo_name("https://bitbucket.example.com/scm/project/repo.git") == "repo"
-    assert get_repo_name("https://bitbucket.example.com/scm/project/repo-name.git") == "repo-name"
+    assert (
+        get_repo_name("https://bitbucket.example.com/scm/project/repo-name.git")
+        == "repo-name"
+    )
 
 
 def test_get_token_for_repo_github():
@@ -74,11 +77,11 @@ def test_apply_auth_to_url_github():
     """Test applying authentication to GitHub URLs."""
     repo_url = "https://github.com/org/repo.git"
     token = "test-token"
-    
+
     # Test with GitHub URL
     auth_url = apply_auth_to_url(repo_url, token, is_github=True)
     assert auth_url == "https://test-token@github.com/org/repo.git"
-    
+
     # Test with no token
     auth_url = apply_auth_to_url(repo_url, None, is_github=True)
     assert auth_url == repo_url
@@ -87,17 +90,23 @@ def test_apply_auth_to_url_github():
 def test_apply_auth_to_url_bitbucket():
     """Test applying authentication to Bitbucket Server URLs."""
     repo_url = "https://bitbucket.example.com/scm/project/repo.git"
-    
+
     # Test with token only (should add default username)
     token = "test-token"
     auth_url = apply_auth_to_url(repo_url, token, is_github=False)
-    assert auth_url == "https://x-token-auth:test-token@bitbucket.example.com/scm/project/repo.git"
-    
+    assert (
+        auth_url
+        == "https://x-token-auth:test-token@bitbucket.example.com/scm/project/repo.git"
+    )
+
     # Test with username:token format
     token = "username:test-token"
     auth_url = apply_auth_to_url(repo_url, token, is_github=False)
-    assert auth_url == "https://username:test-token@bitbucket.example.com/scm/project/repo.git"
-    
+    assert (
+        auth_url
+        == "https://username:test-token@bitbucket.example.com/scm/project/repo.git"
+    )
+
     # Test with no token
     auth_url = apply_auth_to_url(repo_url, None, is_github=False)
     assert auth_url == repo_url
@@ -117,7 +126,9 @@ def test_mask_token_in_url():
 @patch("sonarqube_scanner.git.Repo")
 @patch("sonarqube_scanner.git.get_token_for_repo")
 @patch("sonarqube_scanner.git.is_github_url")
-def test_clone_or_update_repository_with_token(mock_is_github, mock_get_token, mock_repo_class):
+def test_clone_or_update_repository_with_token(
+    mock_is_github, mock_get_token, mock_repo_class
+):
     """Test cloning a repository with token authentication."""
     # Setup mocks
     mock_is_github.return_value = True
@@ -145,7 +156,9 @@ def test_clone_or_update_repository_with_token(mock_is_github, mock_get_token, m
 @patch("sonarqube_scanner.git.Repo")
 @patch("sonarqube_scanner.git.get_token_for_repo")
 @patch("sonarqube_scanner.git.is_github_url")
-def test_clone_or_update_repository_without_token(mock_is_github, mock_get_token, mock_repo_class):
+def test_clone_or_update_repository_without_token(
+    mock_is_github, mock_get_token, mock_repo_class
+):
     """Test cloning a repository without token authentication."""
     # Setup mocks
     mock_is_github.return_value = True
@@ -170,7 +183,9 @@ def test_clone_or_update_repository_without_token(mock_is_github, mock_get_token
 @patch("sonarqube_scanner.git.Repo")
 @patch("sonarqube_scanner.git.get_token_for_repo")
 @patch("sonarqube_scanner.git.is_github_url")
-def test_update_existing_repository_with_token(mock_is_github, mock_get_token, mock_repo_class):
+def test_update_existing_repository_with_token(
+    mock_is_github, mock_get_token, mock_repo_class
+):
     """Test updating an existing repository with token authentication."""
     # Setup mocks
     mock_is_github.return_value = True
@@ -199,7 +214,9 @@ def test_update_existing_repository_with_token(mock_is_github, mock_get_token, m
 @patch("sonarqube_scanner.git.Repo")
 @patch("sonarqube_scanner.git.get_token_for_repo")
 @patch("sonarqube_scanner.git.is_github_url")
-def test_error_handling_with_token_masking(mock_is_github, mock_get_token, mock_repo_class):
+def test_error_handling_with_token_masking(
+    mock_is_github, mock_get_token, mock_repo_class
+):
     """Test that tokens are masked in error messages."""
     # Setup mocks
     mock_is_github.return_value = True
@@ -227,7 +244,9 @@ def test_error_handling_with_token_masking(mock_is_github, mock_get_token, mock_
 @patch("sonarqube_scanner.git.Repo")
 @patch("sonarqube_scanner.git.get_token_for_repo")
 @patch("sonarqube_scanner.git.is_github_url")
-def test_clone_bitbucket_server_repository(mock_is_github, mock_get_token, mock_repo_class):
+def test_clone_bitbucket_server_repository(
+    mock_is_github, mock_get_token, mock_repo_class
+):
     """Test cloning a Bitbucket Server repository with token authentication."""
     # Setup mocks
     mock_is_github.return_value = False
@@ -244,7 +263,9 @@ def test_clone_bitbucket_server_repository(mock_is_github, mock_get_token, mock_
     result = clone_or_update_repository(repo_url, repo_name, branch, base_dir)
 
     # Verify the correct URL with token was used
-    expected_auth_url = "https://username:test-token@bitbucket.example.com/scm/project/repo.git"
+    expected_auth_url = (
+        "https://username:test-token@bitbucket.example.com/scm/project/repo.git"
+    )
     mock_repo_class.clone_from.assert_called_once_with(
         expected_auth_url, base_dir / repo_name
     )
@@ -255,7 +276,9 @@ def test_clone_bitbucket_server_repository(mock_is_github, mock_get_token, mock_
 @patch("sonarqube_scanner.git.Repo")
 @patch("sonarqube_scanner.git.get_token_for_repo")
 @patch("sonarqube_scanner.git.is_github_url")
-def test_update_bitbucket_server_repository(mock_is_github, mock_get_token, mock_repo_class):
+def test_update_bitbucket_server_repository(
+    mock_is_github, mock_get_token, mock_repo_class
+):
     """Test updating a Bitbucket Server repository with token authentication."""
     # Setup mocks
     mock_is_github.return_value = False
@@ -273,7 +296,9 @@ def test_update_bitbucket_server_repository(mock_is_github, mock_get_token, mock
         result = clone_or_update_repository(repo_url, repo_name, branch, base_dir)
 
         # Verify the remote URL was updated with the token
-        expected_auth_url = "https://username:test-token@bitbucket.example.com/scm/project/repo.git"
+        expected_auth_url = (
+            "https://username:test-token@bitbucket.example.com/scm/project/repo.git"
+        )
         mock_repo.remotes.origin.set_url.assert_called_once_with(expected_auth_url)
         mock_repo.remotes.origin.fetch.assert_called_once()
         mock_repo.git.checkout.assert_called_once_with(branch)
