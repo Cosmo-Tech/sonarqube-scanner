@@ -18,74 +18,10 @@ repositories:
     branches: ["main"]
 
 # platform
-  - name: "cosmotech-api-common"
-    url: "https://github.com/Cosmo-Tech/cosmotech-api-common.git"
-    branches: ["main", "release/v3.3", "release/v4-onprem"]
+  - name: "example-project-name"
+    url: "https://github.com/Cosmo-Tech/example.git"
+    branches: ["main", "release/v5", "release/v6"]
 
-  - name: "cosmotech-api"
-    url: "https://github.com/Cosmo-Tech/cosmotech-api.git"
-    branches: ["main", "release/v3.3", "release/v4-onprem"]
-
-  - name: "azure-sample-webapp"
-    url: "https://github.com/Cosmo-Tech/azure-sample-webapp.git"
-    branches: ["main", "release/7.0"]
-
-  - name: "webapp-component-ui"
-    url: "https://github.com/Cosmo-Tech/webapp-component-ui.git"
-    branches: ["main", "release/10.0"]
-
-  - name: "webapp-component-core"
-    url: "https://github.com/Cosmo-Tech/webapp-component-core.git"
-    branches: ["main"]
-
-  - name: "webapp-component-azure"
-    url: "https://github.com/Cosmo-Tech/webapp-component-azure.git"
-    branches: ["main"]
-
-  - name: "cosmotech-api-python-client"
-    url: "https://github.com/Cosmo-Tech/cosmotech-api-python-client.git"
-    branches: ["master"]
-
-  - name: "Babylon"
-    url: "https://github.com/Cosmo-Tech/Babylon.git"
-    branches: ["main"]
-
-  - name: "run-orchestrator"
-    url: "https://github.com/Cosmo-Tech/run-orchestrator.git"
-    branches: ["main"]
-
-  - name: "CosmoTech-Acceleration-Library"
-    url: "https://github.com/Cosmo-Tech/CosmoTech-Acceleration-Library.git"
-    branches: ["main"]
-
-  - name: "cosmotech-api-typescript-client"
-    url: "https://github.com/Cosmo-Tech/cosmotech-api-typescript-client.git"
-    branches: ["master"]
-
-  - name: "terraform-kubernetes-cosmotech-common"
-    url: "https://github.com/Cosmo-Tech/terraform-kubernetes-cosmotech-common.git"
-    branches: ["main", "azure"]
-
-  - name: "terraform-kubernetes-cosmotech-tenant"
-    url: "https://github.com/Cosmo-Tech/terraform-kubernetes-cosmotech-tenant.git"
-    branches: ["main", "azure"]
-
-  - name: "terraform-azure-cosmotech-tenant"
-    url: "https://github.com/Cosmo-Tech/terraform-azure-cosmotech-tenant.git"
-    branches: ["master", "azure"]
-
-  - name: "terraform-azure-cosmotech-common"
-    url: "https://github.com/Cosmo-Tech/terraform-azure-cosmotech-common.git"
-    branches: ["master", "azure"]
-
-  - name: "helm-charts"
-    url: "https://github.com/Cosmo-Tech/helm-charts.git"
-    branches: ["main"]
-
-  - name: "cosmotech-modeling-api"
-    url: "https://github.com/Cosmo-Tech/cosmotech-modeling-api.git"
-    branches: ["main"]
-
-  - name: "cosmotech-modeling-api-typescript-client"
-    url: "https://github.com/Cosmo-Tech/cosmotech-modeling-api-typescript-client.git"
-    branches: ["main"]
+  - name: "other-project"
+    url: "https://bitbucket.corporate.com/cother-project.git"
+    branches: ["main", "release/v8", "release/v4"]
