@@ -70,9 +70,21 @@ uv pip install .
 
 Adapt the `config.yaml` file if necessary.
 
-Configure crontab by running `crontab -e` and adapting the code:
+Prepare a script `scan.sh` by modifying the example:
+
+```shell
+#!/bin/bash
+set -ex
+export BITBUCKET_TOKEN_REPO_1=first.last%40company.com:BITBUCKET_TOKEN
+export GIT_TOKEN_REPO_2=GITHUB_PAT
+export SONARQUBE_TOKEN=SQ_TOKEN
+cd /home/terminator/sonarqube-scanner
+. .venv/bin/activate
+sonarqube-scanner --verbose
+```
+
+Configure crontab by running `crontab -e` and addapting:
 
 ```
-0 0 * * * export GIT_TOKEN_REPO1=ghp_xxxxxxxxxxxx && export GIT_TOKEN_REPO2=ghp_xxxxxxxxxxxx && export BITBUCKET_TOKEN_REPO3=username:token && export SONARQUBE_TOKEN=<replace with Global Scan Token>; PATH=$PATH:/usr/local/bin; $HOME/sonarqube-scanner/.venv/bin/sonarqube-scanner -c $HOME/sonarqube-scanner/config.yaml > $HOME/sonarqube_scanner_last_run.log 2>&1
+0 0 * * * PATH=$PATH:/usr/local/bin; scan.sh > sonarqube_scanner_last_run.log 2>&1
 ```
-Replace `GIT_TOKEN_REPO1`, `GIT_TOKEN_REPO2`, and `BITBUCKET_TOKEN_REPO3` with your actual repository names and tokens.
