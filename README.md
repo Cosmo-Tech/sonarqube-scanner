@@ -3,7 +3,7 @@
 A Python tool to scan GitHub and Bitbucket Server repositories with SonarQube.
 This repository contains the source code for automating the scan runs, if you 
 need your project scanned you only need the template file from this repository
-[docs/sonar-project.properties.template]
+[sonar-project.properties.template](docs/sonar-project.properties.template)
 ## Requirements
 
 - Python 3.8+
