@@ -21,9 +21,9 @@
 # A file should either be in source or test directory, not both. By default 
 # everything is source
 # Define source directories to analyze:
-sonar.sources=sonarqube_scanner
+# sonar.sources=src
 # Define test directories:
-sonar.tests=tests
+# sonar.tests=tests
 
 # Completely ignore files with the following patterns:
 # sonar.exclusions=do_not_look_inside/**
@@ -34,7 +34,4 @@ sonar.tests=tests
 # Language-specific configurations
 # ------------------------------
 # Python version(s) used in the project (comma-separated list of supported versions)
-sonar.python.version=3.13
-
-
-
+# sonar.python.version=3.9,3.10,3.11,3.12,3.13
