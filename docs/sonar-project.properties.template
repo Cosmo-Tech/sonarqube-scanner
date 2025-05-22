@@ -2,8 +2,9 @@
 # -----------------------------------------------------
 
 # This file is used to configure the SonarQube scanner for a project. Rename it
-# to sonar-project.properties and copy to the root of your project directory.
-# https://github.com/Cosmo-Tech/sonarqube-scanner/blob/main/docs/sonar-project.properties.template
+# to sonar-project.properties, copy to the root of your project directory and
+# remove this phrase.
+# (source: https://github.com/Cosmo-Tech/sonarqube-scanner/blob/main/docs/sonar-project.properties.template)
 
 
 # Default project identification properties
@@ -17,8 +18,8 @@
 # sonar.projectVersion=1.0.0             # Version of your project
 
 # Source code and testing configuration
-# -----------------------------------
-# A file should either be in source or test directory, not both. By default 
+# -------------------------------------
+# A file should either be in source or test directory, not both. By default
 # everything is source
 # Define source directories to analyze:
 # sonar.sources=src
@@ -28,10 +29,10 @@
 # Completely ignore files with the following patterns:
 # sonar.exclusions=do_not_look_inside/**
 
-# Code duplication detection settings 
+# Code duplication detection settings
 # sonar.cpd.exclusions=embarassing_code/**,copy_pasted_scripts/**
 
 # Language-specific configurations
-# ------------------------------
+# --------------------------------
 # Python version(s) used in the project (comma-separated list of supported versions)
 # sonar.python.version=3.9,3.10,3.11,3.12,3.13
